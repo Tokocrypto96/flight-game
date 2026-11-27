@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sky Courier — Meridian Isles</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #0b1c2c; }
+  #game { display: block; width: 100vw; height: 100vh; touch-action: none; cursor: crosshair; }
+  #fallback { position: absolute; inset: 0; display: none; place-items: center; color: #cfe8ff;
+    font: 16px/1.5 system-ui, sans-serif; text-align: center; padding: 24px; }
+</style>
+</head>
+<body>
+<canvas id="game" width="1280" height="800"></canvas>
+<div id="fallback"><p>Sky Courier needs JavaScript and a modern desktop browser.<br>
+Use the arrow keys to fly, W/S for throttle, Space to drop cargo.</p></div>
+<script type="module" src="./src/main.js"></script>
+<script>
+  // If the module fails to boot (old browser), show the fallback note.
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      if (!window.__skyCourierBooted) document.getElementById('fallback').style.display = 'grid';
+    }, 1500);
+  });
+</script>
+</body>
+</html>
