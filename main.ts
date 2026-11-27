@@ -3,6 +3,8 @@
 // /output/dossier.json with buildDossier from vendor/makefun-game.ts,
 // exactly as the bounty gate rebuilds it. No network, no build step,
 // standard library only. Run twice, it writes the same bytes twice.
+// NOTE: /output is a mounted volume in the grader — never remove the
+// output directory itself (EBUSY); only its contents are cleared.
 
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -35,7 +37,14 @@ function copyTree(name: string): void {
 }
 
 // A fresh, empty output directory, so a second run writes the same bytes.
-rmSync(outDir, { recursive: true, force: true });
+// Clear only what this program writes INSIDE the output directory, never
+// the directory itself: in the grader /output is a mounted volume and
+// removing the mount point fails with EBUSY (rmdir), which killed the
+// previous submission with exit 1. The kit's starter does the same:
+// mkdir + copy, no recursive remove of the output root.
+for (const name of ['game', 'screenshots', 'dossier.json']) {
+  rmSync(join(outDir, name), { recursive: true, force: true });
+}
 mkdirSync(outDir, { recursive: true });
 
 copyTree('game');
